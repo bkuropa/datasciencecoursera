@@ -1,22 +1,21 @@
 ## Put comments here that give an overall description of what your
 ## functions do
 
-## Write a short comment describing this function
-
+## Make lists of which matricies have been cached from variable "x"
 makeCacheMatrix <- function(x = matrix()) {
-      invMat <- NULL  #clear old matrix
-      # Move y into global level
+      invX <- NULL  #clear old matrix
+      # Move y into current cache
       set <- function(y) {
             x <<- y
-            invMat <<- NULL
+            invX <<- NULL
       }
       # Pull x into current function
       get <- function() x
       
       #Move inverse into cache
-      setInv <- function() invMat <<- solve(x)
+      setInv <- function(inverted) invX <<- inverted
       #Pull inverse into current function
-      getInv <- function() invMat
+      getInv <- function() invX
       
       #Show results
       list(set = set, get = get, 
@@ -25,19 +24,19 @@ makeCacheMatrix <- function(x = matrix()) {
 }
 
 
-## Write a short comment describing this function
+## Check if matrix is cached and solve it
 
 cacheSolve <- function(x, ...) {
       ## Return a matrix that is the inverse of 'x'
-      invMat <- x$getInv()
-      
-      if(!is.null(invMat)){
+      invX <- x$getInv()
+      # If the inverse is not empty, pull from cache (no math)
+      if(!is.null(invX)){
             message("getting cached matrix data")
-            return(invMat)
+            return(invX)
       }
-      
+      # If the Inv.Mat. is empty, do the math
       data <- x$get()
-      invMat <-solve(data, ...)
-      x$setInv(invMat)
-      invMat
+      invX <-solve(data,...)
+      x$setInv(invX)
+      invX
 }
