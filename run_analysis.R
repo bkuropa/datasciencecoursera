@@ -8,7 +8,7 @@ importActData <- function(destFolder) {
       ytest <- read.csv(paste(destFolder,"/test/Y_test.txt",sep=""),header=FALSE,stringsAsFactors=FALSE)
       xtest <- read.table(paste(destFolder,"/test/X_test.txt",sep=""),sep = "")
       desname <- read.csv(paste(destFolder,"/features.txt",sep=""),header=FALSE,sep=" ",stringsAsFactors = FALSE)
-      actnames <- read.csv(paste(destFolder,"/activity_labels.txt",sep=""),sep = " ",header=FALSE,stringsAsFactors = FALSE)
+      
 
       ## MERGE both training and test data into one large data set:
       subtotal <- rbind(subtrain,subtest)
@@ -87,17 +87,28 @@ cleanNames <- function(mytable) {
 }
 
 ##EXECUTE all functions giving location of parent folder
-tidyData <- function(location){
-      library(dplyr)
-      #location <- readline(prompt="Enter folder location or type 'pass' for working directory: ")
-      #if(location=='pass'){location = getwd()}
-      print("Please wait: Importing data")
-      totaldata <- importActData(location)
+tidyData <- function(){
       
+      library(dplyr)
+      location <- "getdata_dataset.zip"
+      
+      ## Download and unzip the dataset:
+      if (!file.exists(location)){
+            fileURL <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip "
+            download.file(fileURL, location)
+      }  
+      if (!file.exists("UCI HAR Dataset")) { 
+            unzip(location) 
+      }
+      
+      print("Please wait: Importing data")
+      totaldata <- importActData("UCI HAR Dataset")
+      actnames <- read.csv(paste("UCI HAR Dataset/activity_labels.txt",sep=""),sep = " ",header=FALSE,stringsAsFactors = FALSE)
       print("Data import finished. Processing:")
       meanstd <- extractSTATS(totaldata)
       meanstd <- setActNames(meanstd,actnames)
       avgdata <- meanTable(meanstd,actnames)
       avgdata <- cleanNames(avgdata)
-      return(avgdata)
+      write.table(avgdata,file="analysis_result.txt",row.names = FALSE)
+      write.table(avgdata,file="",row.names=FALSE)
 }
