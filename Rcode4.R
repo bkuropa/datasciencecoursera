@@ -14,6 +14,7 @@ elect2$Voltage <- as.numeric(elect2$Voltage)
 elect2$combo <- as.POSIXct(paste(elect2$Date, elect2$Time))
 elect2$combo2 <- weekdays(elect2$combo,abbreviate = TRUE)
 
+#Add a function to plot the same black line plot from Q2 for different variables in lattice
 blackone = function(myvar,myname,dataset) {
       
       xat <- as.POSIXct(c("2007-02-01 00:00:00 EST","2007-02-02 00:00:00 EST","2007-02-03 00:00:00 EST"))
@@ -24,6 +25,7 @@ blackone = function(myvar,myname,dataset) {
              xlab = "", ylab = myname,
              cex.axis=0.8)
 }
+#Reproduce the colourful function from Q3 with the same 3 factors:
 colone = function(myelect2) {
       test <- melt(myelect2,id=c("Date","Time","combo","combo2"))
       test2 <- test[which(test$variable == "Sub_metering_1" | test$variable == "Sub_metering_2"|test$variable == "Sub_metering_3"),]
@@ -37,8 +39,8 @@ colone = function(myelect2) {
 
 xat <- as.POSIXct(c("2007-02-01 00:00:00 EST","2007-02-02 00:00:00 EST","2007-02-03 00:00:00 EST"))
 labxat <- weekdays(xat,abbreviate = TRUE)
-par(mfrow=c(2,2))
 
+#Use grid.arrange to merge each of the 4 plots into one image.
 plot1 <- blackone(elect2$Global_active_power,"Global Active Power",elect2)
 plot2 <-blackone(elect2$Voltage,"Voltage",elect2)
 plot3 <- colone(elect2)
